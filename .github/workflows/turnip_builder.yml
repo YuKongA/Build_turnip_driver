@@ -1,41 +1,29 @@
-name: Build "turnip"
+name: Build Mesa Turnip
 
 on:
   workflow_dispatch:
-  schedule:
-  - cron: "20 5 1,15 * *"
 
 jobs:
-  start_building_turnip:
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Prepare environment
+    - name: Prepare Environment
       run: |
         sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+        sudo apt remove firefox -y
         sudo apt update
+        sudo apt upgrade
         sudo apt build-dep mesa -y
-        sudo sed -i 's/jammy/mantic/g' /etc/apt/sources.list
-        sudo apt update
-        sudo apt install meson
+        sudo pip3 install --upgrade meson
 
-    - name: Execute build script
+    - name: Execute Build Script
       run: bash ./turnip_builder.sh
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.0
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: Upload meson and ninja logs for debugging
-        path: |
-          turnip_workdir/ninja_log
-          turnip_workdir/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
-
-    - name: Release "turnip"
-      uses: softprops/action-gh-release@v1
-      with:
-        body: Turnip magisk module
-        tag_name: github_run
-        name: Weekly Action Release
-        files: |
-           turnip_workdir/turnip.zip
+        name: Upload Snapshot
+        compression-level: 9
+        path: turnip_workdir/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so
