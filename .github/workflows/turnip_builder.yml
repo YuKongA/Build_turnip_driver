@@ -2,6 +2,16 @@ name: Build Mesa Turnip
 
 on:
   workflow_dispatch:
+    inputs:
+      BRANCH:
+        description: "Branch"
+        required: true
+        default: 'main'
+      A750_FIX:
+        description: "A750 Fix"
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -11,19 +21,15 @@ jobs:
 
     - name: Prepare Environment
       run: |
-        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-        sudo apt remove firefox -y
-        sudo apt update
-        sudo apt upgrade
-        sudo apt build-dep mesa -y
-        sudo pip3 install --upgrade meson
+        sudo apt remove meson firefox -y
+        sudo pip3 install --upgrade meson ninja mako
 
     - name: Execute Build Script
-      run: bash ./turnip_builder.sh
+      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.A750_FIX }}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Upload Snapshot
+        name: TurnipDriver_${{ env.MESA_VERSION }}_${{ env.VULKAN_VERSION }}_${{ env.DATA }}
         compression-level: 9
-        path: turnip_workdir/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so
+        path: turnip_workdir/mesa/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so
