@@ -4,9 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       BRANCH:
-        description: "Branch"
+        description: "Mesa Branch"
         required: true
         default: 'main'
+      NDK:
+        description: "NDK Version"
+        required: true
+        default: 'r26c'
+      SDK:
+        description: "SDK Version"
+        required: true
+        default: '31'
       A750_FIX:
         description: "A750 Fix"
         required: true
@@ -35,11 +43,11 @@ jobs:
         sudo pip3 install --upgrade meson ninja mako
 
     - name: Execute Build Script
-      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.A750_FIX }} ${{ github.event.inputs.MAGISK }} ${{ github.event.inputs.ADRENOTOOL }}
+      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.NDK }} ${{ github.event.inputs.SDK }} ${{ github.event.inputs.A750_FIX }} ${{ github.event.inputs.MAGISK }} ${{ github.event.inputs.ADRENOTOOL }}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: TurnipDriver_${{ env.MESA_VERSION }}_${{ env.VULKAN_VERSION }}_${{ env.DATA }}
+        name: TurnipDriver_${{ env.MESA_VERSION }}_${{ env.VULKAN_VERSION }}_SDK${{github.event.inputs.SDK}}_${{ env.DATA }}
         compression-level: 9
         path: turnip_workdir/*

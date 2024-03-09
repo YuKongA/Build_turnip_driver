@@ -2,20 +2,20 @@
 
 GITHUB_ENV="$1"
 MESA_BRANCH="$2"
-A750_FIX="$3"
-MAGISK="$4"
-ADRENOTOOL="$5"
-WORK_DIR="$(pwd)/turnip_workdir"
-NDK_DIR="android-ndk-r26c"
-SDK_VER="31"
+NDK_DIR="$3"
+SDK_VER="$4"
+A750_FIX="$5"
+MAGISK="$6"
+ADRENOTOOL="$7"
+
 MESA_GIT="https://gitlab.freedesktop.org/mesa/mesa.git"
+NDK_DIR="android-ndk-$NDK_DIR"
+WORK_DIR="$(pwd)/turnip_workdir"
 MAGISK_DIR="$WORK_DIR/turnip_module"
 PACKAGE_DIR="$WORK_DIR/turnip_package"
 
 DATA=$(date +'%y%m%d')
 echo "DATA="${DATA}"" >>$GITHUB_ENV
-
-clear
 
 # there are 5 functions here, simply comment to disable.
 # you can insert your own function and make a pull request.
@@ -149,7 +149,7 @@ id=turnip_driver
 name=Turnip Driver $MESA_VERSION $VULKAN_VERSION
 version=$DATA
 versionCode=$DATA
-author=YuKongA
+author=Mesa
 description=Turnip is an open-source vulkan driver for devices with adreno GPUs.
 EOF
 
@@ -163,7 +163,7 @@ EOF
 	cp "$WORK_DIR"/vulkan.adreno.so "$MAGISK_DIR"/"$HW"
 
 	echo "Packing files in to magisk module ..." $'\n'
-	MAGISK_FILENAME=[Magisk]TurnipDriver_"$MESA_VERSION"_"$VULKAN_VERSION"_"$DATA"
+	MAGISK_FILENAME=[Magisk]TurnipDriver_"$MESA_VERSION"_"$VULKAN_VERSION"_SDK"$SDK_VER"_"$DATA"
 	echo "MAGISK_FILENAME="${MAGISK_FILENAME}"" >>$GITHUB_ENV
 	zip -r -9 "$WORK_DIR"/"$MAGISK_FILENAME".zip ./*
 	rm -rf "$WORK_DIR"/turnip_module
@@ -179,11 +179,11 @@ port_lib_for_adrenotool() {
   "schemaVersion": 1,
   "name": "Meas Turnip Driver",
   "description": "$MESA_VERSION $DATA",
-  "author": "mesa",
-  "packageVersion": "1",
+  "author": "Mesa",
+  "packageVersion": 1,
   "vendor": "Mesa",
   "driverVersion": "Vulkan $VULKAN_VERSION",
-  "minApi": 31,
+  "minApi": $SDK_VER,
   "libraryName": "vulkan.adreno.so"
 }
 EOF
@@ -192,7 +192,7 @@ EOF
 	cp "$WORK_DIR"/vulkan.adreno.so "$PACKAGE_DIR"
 
 	echo "Packing files in to adrenotool package ..." $'\n'
-	ADRENOTOOL_FILENAME=[AdrenoTool]TurnipDriver_"$MESA_VERSION"_"$VULKAN_VERSION"_"$DATA"
+	ADRENOTOOL_FILENAME=[AdrenoTool]TurnipDriver_"$MESA_VERSION"_"$VULKAN_VERSION"_SDK"$SDK_VER"_"$DATA"
 	echo "ADRENOTOOL_FILENAME="${ADRENOTOOL_FILENAME}"" >>$GITHUB_ENV
 	zip -9 "$WORK_DIR"/"$ADRENOTOOL_FILENAME".zip ./*
 	rm -rf "$WORK_DIR"/turnip_package
