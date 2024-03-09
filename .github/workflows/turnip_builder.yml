@@ -12,6 +12,16 @@ on:
         required: true
         default: false
         type: boolean
+      MAGISK:
+        description: "Magisk Module"
+        required: true
+        default: false
+        type: boolean
+      ADRENOTOOL:
+        description: "Adreno Tool"
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -25,11 +35,11 @@ jobs:
         sudo pip3 install --upgrade meson ninja mako
 
     - name: Execute Build Script
-      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.A750_FIX }}
+      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.A750_FIX }} ${{ github.event.inputs.MAGISK }} ${{ github.event.inputs.ADRENOTOOL }}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
         name: TurnipDriver_${{ env.MESA_VERSION }}_${{ env.VULKAN_VERSION }}_${{ env.DATA }}
         compression-level: 9
-        path: turnip_workdir/mesa/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so
+        path: turnip_workdir/*
