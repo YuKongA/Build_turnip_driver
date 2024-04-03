@@ -15,11 +15,6 @@ on:
         description: "SDK Version"
         required: true
         default: '31'
-      A750_FIX:
-        description: "A750 Fix"
-        required: true
-        default: false
-        type: boolean
       MAGISK:
         description: "Magisk Module"
         required: true
@@ -43,7 +38,7 @@ jobs:
         sudo pip3 install --upgrade meson ninja mako
 
     - name: Execute Build Script
-      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.NDK }} ${{ github.event.inputs.SDK }} ${{ github.event.inputs.A750_FIX }} ${{ github.event.inputs.MAGISK }} ${{ github.event.inputs.ADRENOTOOL }}
+      run: bash ./turnip_builder.sh $GITHUB_ENV ${{ github.event.inputs.BRANCH }} ${{ github.event.inputs.NDK }} ${{ github.event.inputs.SDK }} ${{ github.event.inputs.MAGISK }} ${{ github.event.inputs.ADRENOTOOL }}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4

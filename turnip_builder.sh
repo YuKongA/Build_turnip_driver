@@ -4,9 +4,8 @@ GITHUB_ENV="$1"
 MESA_BRANCH="$2"
 NDK_DIR="$3"
 SDK_VER="$4"
-A750_FIX="$5"
-MAGISK="$6"
-ADRENOTOOL="$7"
+MAGISK="$5"
+ADRENOTOOL="$6"
 
 MESA_GIT="https://gitlab.freedesktop.org/mesa/mesa.git"
 NDK_DIR="android-ndk-$NDK_DIR"
@@ -21,10 +20,6 @@ echo "DATA="${DATA}"" >>$GITHUB_ENV
 # you can insert your own function and make a pull request.
 run_all() {
 	prepare_workdir
-
-	if [ "$A750_FIX" = "true" ]; then
-		fix_8g3
-	fi
 
 	build_lib_for_android
 
@@ -60,12 +55,6 @@ prepare_workdir() {
 	VULKAN_VERSION="$MAJOR.$MINOR.$PATCH"
 	echo "MESA_VERSION="${MESA_VERSION}"" >>$GITHUB_ENV
 	echo "VULKAN_VERSION="${VULKAN_VERSION}"" >>$GITHUB_ENV
-}
-
-fix_8g3() {
-	echo "Patched to fix 8g3 ..." $'\n'
-	curl https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/27912.patch --output "27912.patch"
-	git apply "27912.patch"
 }
 
 build_lib_for_android() {
