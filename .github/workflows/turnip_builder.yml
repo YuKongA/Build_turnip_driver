@@ -10,11 +10,11 @@ on:
       NDK:
         description: "NDK Version"
         required: true
-        default: 'r26c'
+        default: 'r26d'
       SDK:
         description: "SDK Version"
         required: true
-        default: '31'
+        default: '34'
       MAGISK:
         description: "Magisk Module"
         required: true
